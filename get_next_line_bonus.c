@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jose-an2 <jose-an2@42barcelona.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 21:53:41 by jose-an2          #+#    #+#             */
-/*   Updated: 2025/11/03 20:00:50 by jose-an2         ###   ########.fr       */
+/*   Updated: 2025/11/03 20:10:44 by jose-an2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 static char	*fill_buff(int fd, char *lchar, char *buffer);
 
@@ -18,23 +18,23 @@ static char	*get_line(char *line_buff);
 
 char	*get_next_line(int fd)
 {
-	static char	*lchars;
+	static char	*lchars[MAX_FD];
 	char		*buffer;
 	char		*line;
 
 	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
-		return (free(lchars), lchars = NULL, NULL);
+		return (free(lchars[fd]), lchars[fd] = NULL, NULL);
 	buffer = (char *)malloc((BUFFER_SIZE + 1) * sizeof(char));
 	if (!buffer)
 		return (NULL);
-	lchars = fill_buff(fd, lchars, buffer);
+	lchars[fd] = fill_buff(fd, lchars[fd], buffer);
 	free(buffer);
 	buffer = NULL;
-	if (!lchars || *lchars == '\0')
-		return (free(lchars), lchars = NULL, NULL);
-	line = ft_strdup(lchars);
-	free(lchars);
-	lchars = get_line(line);
+	if (!lchars[fd] || *lchars[fd] == '\0')
+		return (free(lchars[fd]), lchars[fd] = NULL, NULL);
+	line = ft_strdup(lchars[fd]);
+	free(lchars[fd]);
+	lchars[fd] = get_line(line);
 	return (line);
 }
 
